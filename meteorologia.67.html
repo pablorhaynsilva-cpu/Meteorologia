@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hermanos Meteorologia - Painel de Monitoramento</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #111827;
+            --card-border: #1f2937;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --accent-blue: #38bdf8;
+            --accent-green: #34d399;
+            --accent-orange: #fbbf24;
+            --accent-red: #f87171;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--card-border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-badge {
+            background-color: rgba(52, 211, 153, 0.1);
+            color: var(--accent-green);
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid rgba(52, 211, 153, 0.2);
+        }
+
+        main {
+            flex: 1;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .hero-radar {
+            background: linear-gradient(135deg, #111827, #1f2937);
+            padding: 1.75rem 1.25rem;
+            border-radius: 1rem;
+            border: 1px solid var(--card-border);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-radar h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-radar p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 0.5rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .search-box input {
+            flex: 1;
+            background-color: var(--bg-color);
+            border: 1px solid var(--card-border);
+            padding: 0.65rem 1rem;
+            border-radius: 0.5rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .search-box input:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .btn-search {
+            background-color: var(--accent-blue);
+            color: #0b0f19;
+            border: none;
+            padding: 0 1.25rem;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-search:hover {
+            opacity: 0.9;
+        }
+
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1rem;
+        }
+
+        .weather-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .metric-item {
+            background-color: var(--bg-color);
+            padding: 0.65rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--card-border);
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .metric-value {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 0.1rem;
+        }
+
+        .alert-box {
+            background-color: rgba(248, 113, 113, 0.1);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .alert-icon {
+            font-size: 1.25rem;
+        }
+
+        .alert-content h4 {
+            color: var(--accent-red);
+            font-size: 0.95rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .alert-content p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.25rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--card-border);
+            background-color: var(--card-bg);
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <span>⚡</span> Hermanos Meteorologia
+        </div>
+        <div class="status-badge">● Monitorando</div>
+    </header>
+
+    <main>
+        <!-- Bloco de Busca / Localização -->
+        <section class="hero-radar">
+            <h1>Painel Meteorológico</h1>
+            <p>Acompanhe condições atmosféricas, registros e alertas em tempo real.</p>
+            <div class="search-box">
+                <input type="text" id="cidadeInput" placeholder="Digite sua região (ex: Nova Friburgo)">
+                <button class="btn-search" onclick="atualizarRegiao()">Buscar</button>
+            </div>
+        </section>
+
+        <!-- Alerta Ativo -->
+        <div class="alert-box">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-content">
+                <h4 id="alertaTitulo">Atenção: Instabilidade Atmosférica</h4>
+                <p id="alertaTexto">Possibilidade de formação de nuvens Cumulonimbus e rajadas de vento isoladas na região serrana ao longo da tarde.</p>
+            </div>
+        </div>
+
+        <!-- Cards de Dados Atuais -->
+        <div class="grid-cards">
+            <!-- Card 1: Condições Atuais -->
+            <div class="weather-card">
+                <div class="card-header">
+                    <span id="regiaoNome">📍 Nova Friburgo</span>
+                    <span>Agora</span>
+                </div>
+                <div class="card-title">Condições Atmosféricas</div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">Temperatura</div>
+                        <div class="metric-value" id="valTemp">22°C</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Umidade</div>
+                        <div class="metric-value" id="valUmidade">78%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Vento e Dinâmica -->
+            <div class="weather-card">
+                <div class="card-header">
+                    <span>💨 Dinâmica do Vento</span>
+                    <span>Superfície</span>
+                </div>
+                <div class="card-title">Velocidade e Direção</div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">Velocidade</div>
+                        <div class="metric-value" id="valVento">14 km/h</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Direção</div>
+                        <div class="metric-value">SE (Sudeste)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 - Hermanos Meteorologia & RegistrosBR</p>
+    </footer>
+
+    <script>
+        function atualizarRegiao() {
+            const input = document.getElementById('cidadeInput');
+            const nomeRegiao = document.getElementById('regiaoNome');
+            
+            if (input.value.trim() !== '') {
+                nomeRegiao.textContent = '📍 ' + input.value;
+                // Exemplo simples de interação dinâmica com JavaScript
+                document.getElementById('valTemp').textContent = Math.floor(Math.random() * (28 - 16) + 16) + '°C';
+                document.getElementById('valUmidade').textContent = Math.floor(Math.random() * (90 - 50) + 50) + '%';
+                document.getElementById('valVento').textContent = Math.floor(Math.random() * (35 - 5) + 5) + ' km/h';
+                input.value = '';
+            }
+        }
+    </script>
+
+</body>
+</html>
